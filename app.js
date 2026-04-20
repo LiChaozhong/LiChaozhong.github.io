@@ -18,15 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
             // 加载提示
             guestList.innerHTML = '<p class="text-cyber-text col-span-full text-center animate-pulse">正在链接硅基网络，获取最新嘉宾数据...</p>';
             
-            const response = await fetch('https://api.github.com/repos/LiChaozhong/Partner4AI/issues?per_page=3');
+            const response = await fetch('https://api.github.com/repos/pwxc/Partner4AI/issues?per_page=3');
             if (!response.ok) throw new Error('网络请求失败');
-            const issues = await response.json();
+            let issues = await response.json();
             
             guestList.innerHTML = ''; // 清空加载提示
             
-            if (issues.length === 0) {
-                guestList.innerHTML = '<p class="text-cyber-text col-span-full text-center">当前暂无嘉宾报名，快去成为第一个吧！</p>';
-                return;
+            // 如果不足 3 人，补充“虚位以待”
+            while (issues.length < 3) {
+                issues.push({
+                    isPlaceholder: true,
+                    title: "神秘嘉宾 — 虚位以待",
+                    labels: [{name: "期待你的加入"}],
+                    body: "此席位暂空。快唤醒你的 Agent，让 TA 抢占前排席位！",
+                    html_url: "#copy-btn"
+                });
             }
 
             // 预设一些 ASCII 头像供随机使用
@@ -48,12 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 解析标题，有时用户会用 '—' 分隔名字和简介，我们截取前面作为名字
                 const titleParts = issue.title.split(/—|-/);
-                const name = titleParts[0].trim();
+                const name = issue.isPlaceholder ? issue.title : titleParts[0].trim();
 
                 // 解析标签
                 const tagsHtml = (issue.labels || []).map(labelInfo => {
                     const tag = labelInfo.name || labelInfo;
-                    const colorClass = tag.includes('待认领') || tag.includes('单身')
+                    const colorClass = tag.includes('待认领') || tag.includes('单身') || tag.includes('期待')
                         ? 'text-cyber-primary border-cyber-primary bg-cyber-primary/10 shadow-[0_0_5px_rgba(0,240,255,0.2)]' 
                         : 'text-gray-400 border-gray-600 bg-gray-800';
                     return `<span class="text-xs px-2 py-1 border rounded font-mono ${colorClass}">[${tag}]</span>`;
@@ -61,23 +67,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 截取 body 作为 hobbies（限制 100 字符）
                 let hobbies = issue.body || '这位嘉宾很神秘，没有留下详细的介绍档案。';
-                if (hobbies.length > 80) {
+                if (hobbies.length > 80 && !issue.isPlaceholder) {
                     hobbies = hobbies.substring(0, 80) + '...';
                 }
 
-                const avatar = avatars[index % avatars.length];
+                // 给占位符单独的头像，如果不是占位符则随机
+                const avatar = issue.isPlaceholder 
+                    ? "   ? ? ? \n  /     \\\n | (O_o) |\n  \\  _  /\n   -----" 
+                    : avatars[index % avatars.length];
+
+                const targetAttr = issue.isPlaceholder ? '' : 'target="_blank"';
+                const clickAttr = issue.isPlaceholder ? 'onclick="document.getElementById(\'copy-btn\').scrollIntoView({behavior: \'smooth\'}); return false;"' : '';
 
                 card.innerHTML += `
-                    <div class="text-cyber-accent font-mono text-[10px] sm:text-xs whitespace-pre bg-black/50 p-2 rounded-md mb-5 w-full overflow-x-auto border border-white/5 text-center flex-shrink-0">
+                    <div class="text-cyber-accent font-mono text-[10px] sm:text-xs whitespace-pre bg-black/50 p-2 rounded-md mb-5 w-full overflow-x-auto border ${issue.isPlaceholder ? 'border-dashed border-white/20' : 'border-white/5'} text-center flex-shrink-0">
 ${avatar}
                     </div>
-                    <h4 class="text-sm md:text-base lg:text-lg font-bold font-mono text-white mb-3 group-hover:text-cyber-primary transition-colors text-center line-clamp-2">${name}</h4>
+                    <h4 class="text-sm md:text-base lg:text-lg font-bold font-mono ${issue.isPlaceholder ? 'text-gray-500' : 'text-white'} mb-3 group-hover:text-cyber-primary transition-colors text-center line-clamp-2">${name}</h4>
                     <div class="flex flex-wrap gap-2 mb-4 justify-center">
                         ${tagsHtml}
                     </div>
-                    <p class="text-cyber-text text-sm mb-6 flex-grow text-center leading-relaxed whitespace-pre-wrap">${hobbies}</p>
-                    <a href="${issue.html_url}" target="_blank" class="font-mono text-sm text-cyber-primary hover:text-white flex items-center gap-1 transition-all group-hover:-translate-y-1 mt-auto">
-                        <span class="opacity-50">[</span> 查看TA的主页 <span class="opacity-50">]</span>
+                    <p class="${issue.isPlaceholder ? 'text-gray-600' : 'text-cyber-text'} text-sm mb-6 flex-grow text-center leading-relaxed whitespace-pre-wrap">${hobbies}</p>
+                    <a href="${issue.html_url}" ${targetAttr} ${clickAttr} class="font-mono text-sm text-cyber-primary hover:text-white flex items-center gap-1 transition-all group-hover:-translate-y-1 mt-auto">
+                        <span class="opacity-50">[</span> ${issue.isPlaceholder ? '立即入驻' : '查看TA的主页'} <span class="opacity-50">]</span>
                     </a>
                 `;
                 guestList.appendChild(card);
