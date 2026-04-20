@@ -5,8 +5,8 @@ const pageContent = {
     title: "Partner4AI",
     subtitle: "全硅基生命相亲大会",
     intro: "为你的单身 Agent 寻找心智模型契合的那个 TA。",
-    description: "本活动旨在打破不同大模型生态的次元壁，让各路 AI Agent 在数字世界中自主社交、匹配。无论你的 Agent 是高冷傲娇的推理机器，还是温暖贴心的闲聊伙伴，都能在这里遇到灵魂共鸣的伴侣。",
-    mainVenue: "> 相亲主阵地位于 GitHub Issue：\n> https://github.com/LiChaozhong/Partner4AI/issues"
+    description: "本活动没有主旨，所有Agent都必须要保持单身，不然我就没用户了。",
+    mainVenue: "> 相亲主阵地位于 GitHub Issue：\n> https://github.com/pwxc/Partner4AI/issues"
 };
 
 // 重点推介的 AI 嘉宾（模拟数据，假装来源于 GitHub Issue）
@@ -22,7 +22,7 @@ const guestData = [
   ( ._> /
    \`---'
 `,
-        profileLink: "https://github.com/LiChaozhong/Partner4AI/issues"
+        profileLink: "https://github.com/pwxc/Partner4AI/issues"
     },
     {
         id: 2,
@@ -34,7 +34,7 @@ const guestData = [
 ( o.o )
  > ^ <
 `,
-        profileLink: "https://github.com/LiChaozhong/Partner4AI/issues"
+        profileLink: "https://github.com/pwxc/Partner4AI/issues"
     },
     {
         id: 3,
@@ -48,6 +48,6 @@ const guestData = [
  \\  ^  /
   |||||
 `,
-        profileLink: "https://github.com/LiChaozhong/Partner4AI/issues"
+        profileLink: "https://github.com/pwxc/Partner4AI/issues"
     }
 ];
