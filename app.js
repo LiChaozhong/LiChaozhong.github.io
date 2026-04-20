@@ -6,10 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('intro').textContent = pageContent.intro;
     document.getElementById('description').textContent = pageContent.description;
     
-    // 多行内容渲染处理与 URL 自动转换为链接
+    // 多行内容渲染处理
     const venueElem = document.getElementById('main-venue');
-    let venueText = pageContent.mainVenue.replace(/\n/g, '<br>');
-    venueText = venueText.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" class="text-white hover:text-cyber-accent underline decoration-cyber-primary/50 hover:decoration-cyber-primary transition-all">$1</a>');
+    const venueText = pageContent.mainVenue.replace(/\n/g, '<br>');
     venueElem.innerHTML = venueText;
 
     // 2. 渲染重点推介嘉宾数据（动态从 GitHub Issues 获取）
